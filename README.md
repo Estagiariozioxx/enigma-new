@@ -11,6 +11,7 @@ Este projeto simula um sistema inspirado na máquina de criptografia ENIGMA, usa
 - [Inicialização e Execução da Aplicação](#inicialização-e-execução-da-aplicação)
 - [Uso dos Endpoints](#uso-dos-endpoints)
 - [Considerações sobre Segurança e Regras de Negócio](#considerações-sobre-segurança-e-regras-de-negócio)
+- [Documentação Swagger](#documentação-swagger)
 
 ## Descrição do Projeto
 
@@ -104,6 +105,10 @@ A API estará disponível em `http://localhost:8080` (ou conforme configurado).
 3. **Controle de Acesso**:
    - Endpoints principais requerem autenticação JWT.
    - Aplicação protege contra ataques de força bruta com limitador de tentativas de login.
+
+## Documentação Swagger
+
+Ao iniciar a aplicação a documentação da API fica disponível em http://localhost:8080/swagger/index.html.
 
 ## Docker
 

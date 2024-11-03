@@ -1,0 +1,335 @@
+basePath: /
+definitions:
+  controllers.Create:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  controllers.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  controllers.Loginsucess:
+    properties:
+      token:
+        type: string
+    type: object
+  controllers.Sucess:
+    properties:
+      message:
+        type: string
+    type: object
+  controllers.currentKey:
+    properties:
+      current_key:
+        $ref: '#/definitions/models.Key'
+    type: object
+  models.DecryptResult:
+    properties:
+      error:
+        type: string
+      result:
+        type: string
+    type: object
+  models.InputDecrypt:
+    properties:
+      document:
+        type: string
+      first_word:
+        type: string
+    type: object
+  models.Key:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_current:
+        type: boolean
+      key:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      isMaster:
+        type: boolean
+      password:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  utils.TypeErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: leonardolopes-@hotmail.com
+    name: Leonardo Lopes
+    url: https://www.linkedin.com/in/leonardo-lopes-49730a146/
+  description: Documentação da API do Enigma.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Enigma API
+  version: "1.0"
+paths:
+  /api/current-key:
+    get:
+      description: Retorna a chave atualmente ativa no sistema
+      parameters:
+      - description: Token JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.currentKey'
+        "500":
+          description: Erro interno
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Obtém a chave atual
+      tags:
+      - keys
+  /api/decrypt:
+    post:
+      consumes:
+      - application/json
+      description: Recebe um documento e uma chave para descriptografá-lo
+      parameters:
+      - description: Token JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Dados para decriptação
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.InputDecrypt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DecryptResult'
+        "400":
+          description: Dados inválidos
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Descriptografa um documento
+      tags:
+      - decryption
+  /api/keys:
+    get:
+      description: Retorna uma lista de chaves armazenadas
+      parameters:
+      - description: Token JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Número da página
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Key'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Lista as chaves
+      tags:
+      - keys
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Realiza o login do usuário e retorna um token JWT
+      parameters:
+      - description: Dados de login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Loginsucess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+        "429":
+          description: Muitas tentativas de login
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Login do usuário
+      tags:
+      - auth
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: Retorna uma lista de todos os usuários cadastrados
+      parameters:
+      - description: Token JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Lista todos os usuários
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo usuário com os dados fornecidos
+      parameters:
+      - description: Dados do usuário
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Create'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Cria um novo usuário
+      tags:
+      - users
+  /api/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Exclui um usuário com base no ID fornecido
+      parameters:
+      - description: ID do usuário
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Token JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Sucess'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Exclui um usuário
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um usuário com base no ID fornecido
+      parameters:
+      - description: Token JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID do usuário
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados do usuário
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Create'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.TypeErrorResponse'
+      summary: Atualiza um usuário existente
+      tags:
+      - users
+swagger: "2.0"

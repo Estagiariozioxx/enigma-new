@@ -112,14 +112,9 @@ Ao iniciar a aplicação a documentação da API fica disponível em http://loca
 
 ## Docker
 
-O uso de Docker facilita o setup. Para rodar a aplicação com Docker, utilize o arquivo `Dockerfile` e siga os passos:
-
-1. Construa a imagem:
+O uso de Docker facilita o setup. Para rodar a aplicação com Docker, utilize o arquivo `Dockerfile` e execute o seguinte comando:
+obs: Não esqueça de configurar o .env
    ```bash
-   docker build -t enigma-new .
+   docker-compose up --build
    ```
 
-2. Rode o container:
-   ```bash
-   docker run -p 8080:8080 --env-file .env enigma-new
-   ```
